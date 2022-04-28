@@ -57,7 +57,10 @@ rm *.nls* 2> /dev/null
 rm *.out 2> /dev/null
 rm *.toc 2> /dev/null
 rm *.run.xml 2> /dev/null
-rm *.lot 2> /dev/null
+rm *.sub 2> /dev/null
+rm *.suc 2> /dev/null
+rm *.syc 2> /dev/null
+rm *.sym 2> /dev/null
 
 echo "PDF Compile: Success"
 
