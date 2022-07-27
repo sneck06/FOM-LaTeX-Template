@@ -4,8 +4,8 @@ echo "Unter macOS kann es mit dem folgenden Befehl installiert werden: brew inst
 detex thesis_main.tex > thesis_main.txt
 
 # Removes everything before Einleitung and after Anhang
-BEGINNING="Einleitung"
-ENDING="Anhang"
+BEGINNING="Abstract"
+ENDING="Summary"
 while read p; do
   # end txt when end was found
   echo "$p" | grep $ENDING && break
