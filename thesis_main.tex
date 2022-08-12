@@ -96,7 +96,6 @@
 \usepackage{listings}
 
 \lstset{
-	%language=JavaScript,
 	numbers=left,
 	numberstyle=\tiny,
 	numbersep=5pt,
@@ -279,12 +278,6 @@
 \input{kapitel/titelseite}
 
 %-----------------------------------
-% Vorwort (optional; bei Verwendung beide Zeilen entkommentieren und unter Inhaltsverzeichnis setcounter entsprechend anpassen)
-%-----------------------------------
-%\input{kapitel/vorwort/vorwort}
-%\newpage
-
-%-----------------------------------
 % Inhaltsverzeichnis
 %-----------------------------------
 % Um das Tabellen- und Abbbildungsverzeichnis zu de/aktivieren ganz oben in Documentclass schauen
@@ -359,53 +352,7 @@
 % Literaturverzeichnis
 %-----------------------------------
 \newpage
-
-% Die folgende Zeile trägt ALLE Werke aus literatur.bib in das
-% Literaturverzeichnis ein, egal ob sie zietiert wurden oder nicht.
-% Der Befehl ist also nur zum Test der Skripte sinnvoll und muss bei echten
-% Arbeiten entfernt werden.
-%\nocite{*}
-
-%\addcontentsline{toc}{section}{Literatur}
-
-% Die folgenden beiden Befehle würden ab dem Literaturverzeichnis wieder eine
-% römische Seitennummerierung nutzen.
-% Das ist nach dem Leitfaden nicht zu tun. Dort steht nur dass 'sämtliche
-% Verzeichnisse VOR dem Textteil' römisch zu nummerieren sind. (vgl. S. 3)
-%\pagenumbering{Roman} %Zähler wieder römisch ausgeben
-%\setcounter{page}{4}  %Zähler manuell hochsetzen
-
-% Ausgabe des Literaturverzeichnisses
-
-% Keine Trennung der Werke im Literaturverzeichnis nach ihrer Art
-% (Online/nicht-Online)
-%\begin{RaggedRight}
-%\printbibliography
-%\end{RaggedRight}
-
-% Alternative Darstellung, die laut Leitfaden genutzt werden sollte.
-% Dazu die Zeilen auskommentieren und folgenden code verwenden:
-
-% Literaturverzeichnis getrennt nach Nicht-Online-Werken und Online-Werken
-% (Internetquellen).
-% Die Option nottype=online nimmt alles, was kein Online-Werk ist.
-% Die Option heading=bibintoc sorgt dafür, dass das Literaturverzeichnis im
-% Inhaltsverzeichnis steht.
-% Es ist übrigens auch möglich mehrere type- bzw. nottype-Optionen anzugeben, um
-% noch weitere Arten von Zusammenfassungen eines Literaturverzeichnisse zu
-% erzeugen.
-% Beispiel: [type=book,type=article]
 \printbibliography[heading=bibintoc,title={\langde{Literaturverzeichnis}\langen{Bibliography}}]
-
-% neue Seite für Internetquellen-Verzeichnis
-%\newpage
-
-% Laut Leitfaden 2018, S. 14, Fussnote 44 stehen die Internetquellen NICHT im
-% Inhaltsverzeichnis, sondern gehören zum Literaturverzeichnis.
-% Die Option heading=bibintoc würde die Internetquelle als eigenen Eintrag im
-% Inhaltsverzeicnis anzeigen.
-%\printbibliography[type=online,heading=bibintoc,title={\headingNameInternetSources}]
-%\printbibliography[type=online,heading=subbibliography,title={\headingNameInternetSources}]
 
 \input{kapitel/anhang/erklaerung}
 \end{document}
