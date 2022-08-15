@@ -1,0 +1,34 @@
+\section{Domain-Specific Languages}
+Commonly known programming languages, such as C or Java, are also called a \ac{GPL}. \ac{GPL}s are designed to handle any problem with relatively equal levels of efficiency and expressiveness. However, many applications do not require a multifunctional \ac{GPL} and can describe a problem more naturally using a \ac{DSL}. \ac{DSL}s are languages that have been developed specifically for a particular application or domain, to be able to develop faster and more effectively. \parencite[cf.][p. 1]{hudak_domain-specific_1997}
+By tailoring notations and constructs to the domain in question, \ac{DSL}s offer significant gains in expressiveness and usability compared to \ac{GPL}s for the domain in question, with corresponding productivity gains and lower maintenance costs. \parencite[cf.][p. 317]{mernik_when_2005}
+\ac{DSL}s are by no means a product of modern software development but have existed since the beginning of programming. One of the first \ac{DSL}s ever designed was \ac{APT}, which was used for the development of numerically controlled machine tools in 1957. \parencite[cf.][pp. 283-284]{wexelblat_origins_1978}\\
+\ac{DSL}s can be found everywhere in the world of IT, for example, this thesis was written with the help of \LaTeX{} to design layout and formatting. Table \ref{tbl:popular_dsl} lists some well-known \ac{DSL}s and their application/domain to give examples of what is classified as a \ac{DSL}.
+\begin{table}[H]
+    \caption{Popular DSLs}
+    \label{tbl:popular_dsl}
+    \begin{tabularx}{\textwidth}[ht]{|l|X|l|}
+        \hline
+        \textbf{DSL} & \textbf{Applicaiton} \\
+        \hline
+        Lex and Yacc & program lexing and parsing \\
+        PERL & text/file manipulation/scripting \\
+        VDL & hardware description \\
+        \TeX, \LaTeX, troff & document layout \\
+        HTML, SGML & document markup \\
+        SQL, LDL, QUEL & databases \\
+        pic, postscript & 2D graphics \\
+        Open GL & high-level 3D graphics \\
+        Tcl, Tk & GUI scripting \\
+        Mathematica, Maple & symbolic computation \\
+        AutoLisp/AutoCAD & computer aided design \\
+        Csh & OS scripting (Unix) \\
+        IDL & component technology (COM/CORBA) \\
+        Emacs Lisp & text editing \\ 
+        Prolog & logic \\
+        Visual Basic & scripting and more \\
+        Excel Macro Language & spreadsheets and many things never intended \\
+        \hline
+    \end{tabularx} \\
+    \cite[Source:][p. 3]{hudak_domain-specific_1997}
+\end{table}
+Programs written in a \ac{DSL} are considered to be more concise, quicker to write, easier to maintain and easier to reason about and most importantly they can be written by non-programmers. In particular, experts in the domain for which the \ac{DSL} was developed can use \ac{DSL}s to program applications without having to acquire programming skills. An expert of a domain already knows the semantics of the domain, all that is needed to start development is the corresponding notation that expresses these semantics. \parencite[cf.][pp. 2-4]{hudak_domain-specific_1997}
