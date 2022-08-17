@@ -56,6 +56,8 @@
 \usepackage{amsmath}
 \usepackage[table]{xcolor}
 \usepackage{marvosym}			% Verwendung von Symbolen, z.B. perfektes Eurozeichen
+\usepackage[nounderscore]{syntax}	% Write proper Backus-Naur Form, nounderscore is needed to avoid problems with cite function
+\setlength{\grammarindent}{0pt}	% No indent in grammars to not having to use paragraphs and waste space
 
 \renewcommand\familydefault{\sfdefault}
 \usepackage{ragged2e}
@@ -305,17 +307,6 @@
 % dann folgende Zeile auskommentieren.
 \addcontentsline{toc}{section}{\abbreHeadingName}
 \input{abkuerzungen/acronyms}
-\newpage
-
-%-----------------------------------
-% Symbolverzeichnis
-%-----------------------------------
-% In Overleaf führt der Einsatz des Symbolverzeichnisses zu einem Fehler, der aber ignoriert werdne kann
-% Falls das Symbolverzeichnis nicht im Inhaltsverzeichnis angezeigt werden soll
-% dann folgende Zeile auskommentieren.
-\addcontentsline{toc}{section}{\symheadingname}
-\input{skripte/symbolDef}
-\listofsymbols
 \newpage
 
 %-----------------------------------

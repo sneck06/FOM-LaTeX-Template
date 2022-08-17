@@ -1,8 +1,39 @@
 \section{Building a language}
-For a compiler or an interpreter to be able to interpret a \ac{DSL}, the language must be accurately and precisely defined. Accurately means that the language must be defined consistently down to the smallest detail. Precisely means in this case that all aspects of the language must be laid out. If parts of the language are inconsistent or too vague, authors are forced to interpret these aspects themselves. This inevitably leads to different authors having different approaches to the same problem. If a \ac{DSL} is to be created that meets the criteria described above, two components are needed. The first component is a set of rules, also called syntax. The second component is a formal definition of the meaning, also called semantics. \parencite[cf.][p. 2]{farrell_compiler_1995}
+For a compiler or an interpreter to be able to interpret a \ac{DSL}, the language must be accurately and precisely defined. Accurately means that the language must be defined consistently down to the smallest detail. Precisely means in this case that all aspects of the language must be laid out. If parts of the language are inconsistent or too vague, authors of compilers are forced to interpret these aspects themselves. This inevitably leads to different authors having different approaches to the same problem. If a \ac{DSL} is to be created that meets the criteria described above, two components are needed. The first component is a set of rules, also called syntax. The second component is a formal definition of the meaning, also called semantics. \parencite[cf.][p. 2]{farrell_compiler_1995}
 \subsection{Syntax}
 The first step when defining syntax is defining an alphabet. This alphabet consists of tokens, which do not necessarily have to be letters. Several tokens, formulated according to a set of rules, make up a sentence or string. The alphabet of the English language is, in the context of syntax, not a list of the permissible characters, which is predominantly called the alphabet or 'ABC', but the permissible tokens.
 E.g. in the sentence 'the donkey screams' the tokens 'the', 'donkey' and 'screams' are part of the alphabet of the English language. The token 'gHArFk' consists of permissible characters but is not part of the valid alphabet. However, the use of permissible tokens alone does not make a sentence correct. The sentence 'on sleep blue' consists of tokens that are part of the English alphabet, but it is still not a valid sentence. The correct application of the rule set is still missing, in this example a missing object. Only the correct use of the alphabet AND the set of rules make a sentence syntactically correct. \parencite[cf.][p. 2]{farrell_compiler_1995}\\
-If the alphabet and the set of rules are notated in a normal form, they can be called grammar. Relevant to this thesis is the \ac{EBNF}, which will be described in section \ref{sec:EBNF}
+If the alphabet and the set of rules are notated in a normal form, they can be called grammar. Relevant to this thesis is the \ac{EBNF}, which will be described in section \ref{sec:EBNF}.
 \subsection{Extended Backus-Naur Form}\label{sec:EBNF}
-\parencite{backus_report_1960} -> \parencite{wirth_what_1977} -> \parencite{isoiec_149771996e_information_1996} -> \parencite{zaytsev_bnf_2012}
+\ac{EBNF}, as the name suggests, is based on the Backus-Naur Form, which was proposed by a group of thirteen international representatives in 1960, to serve as a basic reference and guide for building compilers. Backus-Naur Form is a notation for describing computational processes and rules as arithmetic expressions, variables, and functions. \parencite[cf.][p. 300]{backus_report_1960}\\
+The syntax can be described as a set of metalinguistic formulae best described with an example. The grammar describing a number can be written in Backus-Naur Form as:
+\begin{grammar}
+    <number> ::= <positive>|-<positive>|0 \\
+    <positive> ::= <digit not zero><optional> \\
+    <optional> ::= <digit><optional>| \\
+    <digit> ::= <digit not zero>|0 \\
+    <digit not zero> ::= 1|2|3|4|5|6|7|8|9
+\end{grammar}
+Characters contained in angel brackets '<>' represent a metalinguistic variable. The character '::=' describes a definition of this variable. The character '|' represents the metalinguistic connective 'or'. Other characters in this example have no special meaning but only represent themselves. So the first line of the grammar means that the variable <number> can be defined or replaced as <positive> or -<positive> or as 0. Since the variable <positive> is mentioned in the definition, there must be a definition for this variable in the grammar, otherwise, the grammar would be incomplete. In the third line, we see a metalinguistic connective without content on its right side. This means that the variable <optional> can also be empty and thus without value. Furthermore, in this line, a variable calls itself recursively, which is allowed. \parencite[cf.][pp. 301-303]{backus_report_1960}\\
+So following this grammar, numbers such as 42 or -3141592 are valid.\\
+In 1977 Wirth proposed a new variant of the Backus-Naur Form to further improve language definition notation. The main goals of this new notation were to \parencite[cf.][p. 822]{wirth_what_1977}
+\begin{itemize}[noitemsep]
+    \item distinguish clearly between metaterminal and nonterminal symbols
+    \item not exclude metaterminals as possible symbols of the language
+    \item enable iteration without using recursion
+\end{itemize}
+This proposal was the basis for the ISO/IEC 14977:1996(E) which now defines the standard for \ac{EBNF}. The major changes that \ac{EBNF} brought can be summarized as: \parencite[cf.][p. VI]{isoiec_149771996e_information_1996}
+\begin{itemize}[noitemsep]
+    \item Terminal symbols must be quoted so any symbol can be a terminal symbol of the language
+    \item Added square brackets to indicate optional symbols and avoid the use of a <empty> symbol
+    \item Added curly brackets to indicate repetition
+    \item Every rule must have a final character
+    \item Normal Brackets group items together, similar to their arithmetic use
+\end{itemize}
+The number example from above can be rewritten in \ac{EBNF} as:
+\begin{grammar}
+    <number> ::= (['-']<digit not zero>{<digit>})|'0'; \\
+    <digit> ::= <digit not zero>|'0'; \\
+    <digit not zero> ::= '1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'|'9';
+\end{grammar}
+This version of the grammar produces the same set of numbers but is more concise and arguably more readable for humans.
