@@ -52,6 +52,7 @@ rm *.ilg 2> /dev/null
 rm *.lof 2> /dev/null
 rm *.log 2> /dev/null
 rm *.lot 2> /dev/null
+rm *.lomycapequ 2> /dev/null
 rm *.nlo 2> /dev/null
 rm *.nls* 2> /dev/null
 rm *.out 2> /dev/null

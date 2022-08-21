@@ -54,7 +54,8 @@
 \usepackage[scaled=0.9]{helvet} % Behebt, zusammen mit Package courier, pixelige Überschriften. Ist, zusammen mit mathptx, dem times-Package vorzuziehen. Details: https://latex-kurs.de/fragen/schriftarten/Times_New_Roman.html
 \usepackage{courier}
 \usepackage{amsmath}
-\usepackage[table]{xcolor}
+\PassOptionsToPackage{table}{xcolor}\usepackage[most]{tcolorbox}
+\tcbset{standard jigsaw, opacityback=0, colframe=black, sharp corners}
 \usepackage{marvosym}			% Verwendung von Symbolen, z.B. perfektes Eurozeichen
 \usepackage[nounderscore]{syntax}	% Write proper Backus-Naur Form, nounderscore is needed to avoid problems with cite function
 \setlength{\grammarindent}{0pt}	% No indent in grammars to not having to use paragraphs and waste space
@@ -159,11 +160,6 @@
 \input{skripte/weitereEbene}
 
 %-----------------------------------
-% Paket für die Nutzung von Anhängen
-%-----------------------------------
-\usepackage{appendix}
-
-%-----------------------------------
 % Zeilenabstand 1,5-zeilig
 %-----------------------------------
 \usepackage{setspace}
@@ -185,16 +181,29 @@
 \BeforeStartingTOC[lof]{\renewcommand*\autodot{:}} % Für den Doppelpunkt hinter Präfix im Abbildungsverzeichnis
 \BeforeStartingTOC[lot]{\renewcommand*\autodot{:}} % Für den Doppelpunkt hinter Präfix im Tabellenverzeichnis
 
+%----------------------------------
+% Rename list of to index of
+%----------------------------------
+\addto\captionsenglish{\renewcommand{\listfigurename}{Index of Figures}}
+\addto\captionsenglish{\renewcommand{\listtablename}{Index of Tables}}
+
 %-----------------------------------
 % Abkürzungsverzeichnis
 %-----------------------------------
 \usepackage[printonlyused]{acronym}
 
 %-----------------------------------
-% Symbolverzeichnis
+% Index of Symbols
 %-----------------------------------
 % Quelle: https://www.namsu.de/Extra/pakete/Listofsymbols.pdf
 \usepackage[final]{listofsymbols}
+
+%-----------------------------------
+% Index of Formulae
+%-----------------------------------
+\DeclareCaptionType{mycapequ}[Formula][Index of Formulae]
+\DeclareCaptionListFormat{mycapequlist}{Formula~#2:}
+\captionsetup[mycapequ]{listformat=mycapequlist}
 
 %-----------------------------------
 % PDF Meta Daten setzen
@@ -214,11 +223,6 @@
         Build=1.1
     }
 }
-
-%-----------------------------------
-% PlantUML
-%-----------------------------------
-%\usepackage{plantuml}
 
 %-----------------------------------
 % Umlaute in Code korrekt darstellen
@@ -303,10 +307,22 @@
 %-----------------------------------
 % Abkürzungsverzeichnis
 %-----------------------------------
-% Falls das Abkürzungsverzeichnis nicht im Inhaltsverzeichnis angezeigt werden soll
-% dann folgende Zeile auskommentieren.
 \addcontentsline{toc}{section}{\abbreHeadingName}
 \input{abkuerzungen/acronyms}
+\newpage
+
+%-----------------------------------
+% Index of Symbols
+%-----------------------------------
+\addcontentsline{toc}{section}{\symheadingname}
+\input{skripte/symbolDef}
+\listofsymbols
+\newpage
+
+%-----------------------------------
+% Index of Formulae
+%-----------------------------------
+\listofmycapequs
 \newpage
 
 %-----------------------------------
@@ -320,25 +336,6 @@
 %-----------------------------------
 % Die Kapitel werden über folgende Datei eingebunden
 \input{skripte/kapitelUebersicht.tex}
-
-%-----------------------------------
-% Appendix / Anhang
-%-----------------------------------
-\newpage
-\section*{\AppendixName} %Überschrift "Anhang", ohne Nummerierung
-\addcontentsline{toc}{section}{\AppendixName} %Den Anhang ohne Nummer zum Inhaltsverzeichnis hinzufügen
-
-\begin{appendices}
-% Nachfolgende Änderungen erfolgten aufgrund von Issue 163
-\makeatletter
-\renewcommand\@seccntformat[1]{\csname the#1\endcsname:\quad}
-\makeatother
-\addtocontents{toc}{\protect\setcounter{tocdepth}{0}} %
-	\renewcommand{\thesection}{\AppendixName\ \arabic{section}}
-	\renewcommand\thesubsection{\AppendixName\ \arabic{section}.\arabic{subsection}}
-	\input{kapitel/anhang/anhang}
-\end{appendices}
-\addtocontents{toc}{\protect\setcounter{tocdepth}{2}}
 
 %-----------------------------------
 % Literaturverzeichnis
