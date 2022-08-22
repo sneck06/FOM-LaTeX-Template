@@ -2,14 +2,35 @@
 Commercial database management has long focused on structured data and the industry requirements have matched those of structured storage applications quite well.
 The problem is that only a small part of the data stored is completely structured, while most of it is completely unstructured or only semi-structured, in the form of documents, emails, web pages, etc. \parencite[cf.][p. 7]{hamilton_microsoft_2001} Full-text search describes a search technique in which all words of a document or a full-text database are matched with search criteria, whereby not only exact matches but also word reflections and the like can be searched. A full-text database, as opposed to a regular bibliographic database, contains not only metadata but also the complete textual content of books and similar documents. \parencite[cf.][pp. 2-3]{tenopir_full_1990}\\
 With large amounts of data, matching every word of all entries is time-consuming and non-performant. To improve this process, a full-text search is divided into an indexing and query phase. In the indexing phase, all words found to be irrelevant, e.g. 'and' or 'the', are ignored by matching them against stoplists, words are normalized, e.g. the capitalization of words, and are merged into an index. \parencite[cf.][p. 11]{coles_pro_2009} In the query phase, full-text query predicates are used to execute search queries. These allow not only a search for exact matches but also generational forms. Generational forms can be, for example, words that stem from the same word or alternative search terms using a language-specific thesaurus. A query processor then calculates the most efficient query plan which delivers the required results. The previously created index is searched for documents and text passages that match the search, and the results are returned in a ranked order. \parencite[cf.][pp. 11-12]{coles_pro_2009}\\
-To determine a rank for a search result the quality has to be measured. One symbol is precision \symp{}. \parencite[cf.][pp. 13-15]{coles_pro_2009}
+To determine a rank for a search result the quality has to be measured. Two key metrics are used when measuring the quality of search results: precision \symp and recall \symr.
+Precision is defined as the relation of relevant search results to irrelevant search results. If, for example, many results are desired about the Jupiter moon Europa, the search term 'Europa' has low precision, since results for the continent 'Europe', as well as for the mythological figure and the moon are displayed. The search term 'Europa Moon' will again have higher precision. Algebraically, precision can be represented as in Formula \ref{form:precision}, where \symn represents the number of relevant retrieved documents and \symd represents the total number of retrieved documents.
 \begin{mycapequ}[H]
-    \caption{Calculating precision}
+    \caption{Precision}
+    \label{form:precision}
     \begin{tcolorbox}[ams equation]
-        p = \frac{n}{d}
+        \symp = \frac{\symn}{\symd}
     \end{tcolorbox}
     \cite[Source:][p. 14]{coles_pro_2009}
-  \end{mycapequ}
+\end{mycapequ}
+The recall is defined as the relation between relevant search results and relevant documents that were not displayed. For example, if five documents in a database deal with the moon Europa and only two are displayed in a search recall is low. Formula \ref{form:recall} shows the mathematical definition, where \symv represents the total number of relevant documents.
+\begin{mycapequ}[H]
+    \caption{Recall}
+    \label{form:recall}
+    \begin{tcolorbox}[ams equation]
+        \symr = \frac{\symn}{\symv}
+    \end{tcolorbox}
+    \cite[Source:][p. 14]{coles_pro_2009}
+\end{mycapequ}
+Although it is nearly impossible to maximize both recall and precision it is still relevant to keep both values as high as possible. Formula \ref{form:whmean} offers the possibility to prefer one of the two metrics precision and recall when calculating the quality of a search result. The nonnegative weight \symbeta weights both metrics equally for a value of 1.0. A value less than 1.0 prefers recall, while a value above 1.0 prefers precision.
+\begin{mycapequ}[H]
+    \caption{Weigthed harmonic mean}
+    \label{form:whmean}
+    \begin{tcolorbox}[ams equation]
+        \symFb = \frac{\left(1 + \symbeta^{2}\right) \cdot \left(\symp \cdot \symr\right)}{\symbeta^{2} \cdot \symp + \symr}
+    \end{tcolorbox}
+    \cite[Source:][p. 15]{coles_pro_2009}
+\end{mycapequ}
+This means \symFb represents the desired search quality and should be as high as possible, deciding whether to focus on recall or precision or both. \parencite[cf.][pp. 13-15]{coles_pro_2009}
 \subsubsection{MS SQL Server Search Architecture}
 \ac{SQL} Server uses the same access method and infrastructure for full-text search as other \ac{MS} products and the Index Service for file systems. This decision enables standardized semantics for full-text search of data in relational databases, web-hosted data, and data stored in the file system and mail systems. On \ac{SQL} servers, not only simple strings can be indexed, but also data structures, such as \ac{HTML} and \ac{XML}, and even complex documents, such as \ac{PDF}, Word, PowerPoint, Excel and other custom document formats. \parencite[cf.][p. 7]{hamilton_microsoft_2001}\\
 The architecture can be divided into five modules, which interact with each other to perform a full-text search. (See Figure \ref{fig:sql_search_architecture})\\
