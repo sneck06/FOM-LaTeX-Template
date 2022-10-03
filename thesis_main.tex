@@ -57,8 +57,8 @@
 \PassOptionsToPackage{table}{xcolor}\usepackage[most]{tcolorbox}
 \tcbset{standard jigsaw, opacityback=0, colframe=black, sharp corners}
 \usepackage{marvosym}			% Verwendung von Symbolen, z.B. perfektes Eurozeichen
-\usepackage[nounderscore]{syntax}	% Write proper Backus-Naur Form, nounderscore is needed to avoid problems with cite function
-\setlength{\grammarindent}{0pt}	% No indent in grammars to not having to use paragraphs and waste space
+\usepackage[nounderscore]{syntax}	% Write proper Backus-Naur Form, no underscore is needed to avoid problems with the cite function
+\setlength{\grammarindent}{0pt}	% No indent in grammar to not having to use paragraphs and waste space
 
 \renewcommand\familydefault{\sfdefault}
 \usepackage{ragged2e}
@@ -97,6 +97,7 @@
 % sauber formatierter Quelltext
 %-----------------------------------
 \usepackage{listings}
+\usepackage{listings-rust}
 
 \lstset{
 	numbers=left,
@@ -124,7 +125,7 @@
 \urlstyle{same}
 
 %%%% DIN 1505 Leitfaden
-\usepackage[backend=biber, style=din, maxcitenames=2]{biblatex}%iso dateformat für YYYY-MM-DD
+\usepackage[backend=biber, style=din, maxcitenames=2]{biblatex}%iso date format für YYYY-MM-DD
 
 %% et al. anstatt u. a. bei mehr als drei Autoren.
 \DefineBibliographyStrings{ngerman}{ 
@@ -204,6 +205,13 @@
 \DeclareCaptionType{mycapequ}[Formula][Index of Formulae]
 \DeclareCaptionListFormat{mycapequlist}{Formula~#2:}
 \captionsetup[mycapequ]{listformat=mycapequlist}
+
+%-----------------------------------
+% Index of Listings
+%-----------------------------------
+\DeclareCaptionType{mycapcode}[Code Listing][Index of Code Listings]
+\DeclareCaptionListFormat{mycapcodelist}{Code Listing~#2:}
+\captionsetup[mycapcode]{listformat=mycapcodelist}
 
 %-----------------------------------
 % PDF Meta Daten setzen
@@ -299,11 +307,13 @@
 %-----------------------------------
 \listoffigures
 \newpage
+
 %-----------------------------------
 % Tabellenverzeichnis
 %-----------------------------------
 \listoftables
 \newpage
+
 %-----------------------------------
 % Abkürzungsverzeichnis
 %-----------------------------------
@@ -326,6 +336,12 @@
 \newpage
 
 %-----------------------------------
+% Index of Formulae
+%-----------------------------------
+\listofmycapcodes
+\newpage
+
+%-----------------------------------
 % Seitennummerierung auf arabisch und ab 1 beginnend umstellen
 %-----------------------------------
 \pagenumbering{arabic}
@@ -338,10 +354,29 @@
 \input{skripte/kapitelUebersicht.tex}
 
 %-----------------------------------
+% Appendix / Anhang
+%-----------------------------------
+\newpage
+\section*{\AppendixName} %Überschrift "Anhang", ohne Nummerierung
+\addcontentsline{toc}{section}{\AppendixName} %Den Anhang ohne Nummer zum Inhaltsverzeichnis hinzufügen
+
+\begin{appendix}
+	% Nachfolgende Änderungen erfolgten aufgrund von Issue 163
+	\makeatletter
+	\renewcommand\@seccntformat[1]{\csname the#1\endcsname:\quad}
+	\makeatother
+	\addtocontents{toc}{\protect\setcounter{tocdepth}{0}} %
+	\renewcommand{\thesection}{\AppendixName\ \arabic{section}}
+	\renewcommand\thesubsection{\AppendixName\ \arabic{section}.\arabic{subsection}}
+	\input{kapitel/appendix/appendix}
+\end{appendix}
+\addtocontents{toc}{\protect\setcounter{tocdepth}{2}}
+
+%-----------------------------------
 % Literaturverzeichnis
 %-----------------------------------
 \newpage
 \printbibliography[heading=bibintoc,title={\langde{Literaturverzeichnis}\langen{Bibliography}}]
 
-\input{kapitel/anhang/erklaerung}
+\input{kapitel/appendix/declaration}
 \end{document}

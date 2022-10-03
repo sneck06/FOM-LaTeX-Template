@@ -1,3 +1,10 @@
 \newpage
 \section{Implementation}
-Implementation
+When using the full-text search, large parts of the SQL statements needed to describe the search are the same, since the search criteria are defined as either WHERE conditions or JOIN criteria. If you want to define a full-text search, you usually use a combination of the given functions. In MSSQL this would be for example CONTAINS or FORMSOF. Therefore I want to develop a query language where you only have to specify this combination of functions and a few parameters to generate the corresponding SQL.
+\subsection{Language definition}
+Example code listing.
+\begin{mycapcode}[H]
+    \caption{run-code-gen function}
+    \lstinputlisting[language=Rust, linerange={31-55}]{code/main.rs}
+    \centerline{Source: main.rs lines 31-55}
+\end{mycapcode}
