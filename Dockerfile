@@ -11,19 +11,19 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update \
 	&& apt-get install -y \
-		wget \
-		texlive-latex-recommended \
-		texlive-latex-extra \
-		texlive-fonts-recommended \
-		texlive-bibtex-extra \
-		texlive-lang-german \
-		texlive-plain-generic \
-		texlive-luatex \
-		biber \
-		xz-utils \
-		python \
-		python-pygments \
-		--no-install-recommends \
+	wget \
+	texlive-latex-recommended \
+	texlive-latex-extra \
+	texlive-fonts-recommended \
+	texlive-bibtex-extra \
+	texlive-lang-german \
+	texlive-plain-generic \
+	texlive-luatex \
+	biber \
+	xz-utils \
+	python \
+	python-pygments \
+	--no-install-recommends \
 	&& rm -rf /var/lib/apt/lists/*
 # This can get removed at some point due to docker-compose
 VOLUME ["/data"]
