@@ -2,9 +2,17 @@
 \section{Implementation}
 When using the full-text search, large parts of the SQL statements needed to describe the search are the same, since the search criteria are defined as either WHERE conditions or JOIN criteria. If you want to define a full-text search, you usually use a combination of the given functions. In MSSQL this would be for example CONTAINS or FORMSOF. Therefore I want to develop a query language where you only have to specify this combination of functions and a few parameters to generate the corresponding SQL.
 \subsection{Language definition}
-Example code listing.
+The first step to define a language is to define its purpose. In this case, there should be functions that represent full-text functions. Furthermore, one must be able to pass parameters to these functions and one should be able to combine both parameters and functions with logical operators and, or and not.
+To announce a function, this query language uses an '@', e.g. '@contains'. From programming languages of the C-family one recognizes the use of parentheses '()' to define parameters. To avoid later confusion with parentheses used for logical grouping, this language uses the colon ':' to enclose parameters. For now, a parameter is defined as a simple word or phrase, which is delimited with quotes '"'. These few rules already allow the definition of a query, such as \lstinline[language=Fulltext-Search]$@contains:apple:$, where 'contains' is the name of a function.
+This set of rules can be written in \ac{EBNF} as:
+\begin{grammar}
+    <search> ::= '@'<function>':'<parameter>':'; \\
+    <function> ::= 'contains'; \\
+    <parameter> ::= <word>|' '' '\{[' ']<word>\}' '' '; \\
+    <word> ::= \{'a'-'z'|'A'-'Z'\};
+\end{grammar}
 \begin{mycapcode}[H]
-    \caption{run-code-gen function}
+    \caption{example code listing}
     \lstinputlisting[language=Rust, linerange={31-55}]{code/code_gen/main.rs}
     \centerline{Source: main.rs lines 31-55}
 \end{mycapcode}

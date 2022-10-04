@@ -32,7 +32,7 @@ This proposal was the basis for the ISO/IEC 14977:1996(E) which now defines the 
 \end{itemize}
 The number example from above can be rewritten in \ac{EBNF} as:
 \begin{grammar}
-    <number> ::= (['-']<digit not zero>{<digit>})|'0'; \\
+    <number> ::= (['-']<digit not zero>\{<digit>\})|'0'; \\
     <digit> ::= <digit not zero>|'0'; \\
     <digit not zero> ::= '1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'|'9';
 \end{grammar}

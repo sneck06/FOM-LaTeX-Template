@@ -99,6 +99,15 @@
 \usepackage{listings}
 \usepackage{listings-rust}
 
+\lstdefinelanguage{Fulltext-Search}{
+	keywords={@contains, @startswith, @inflection, @thesaurus, @near, @weighted},
+	keywordstyle=\color{blue}\bfseries,
+	ndkeywords={:, +, &, |, !, -},
+	ndkeywordstyle=\color{darkgray}\bfseries,
+	stringstyle=\color{red}\ttfamily,
+	morestring=[b]"
+}
+
 \lstset{
 	numbers=left,
 	numberstyle=\tiny,
