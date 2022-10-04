@@ -3,16 +3,24 @@
 When using the full-text search, large parts of the SQL statements needed to describe the search are the same, since the search criteria are defined as either WHERE conditions or JOIN criteria. If you want to define a full-text search, you usually use a combination of the given functions. In MSSQL this would be for example CONTAINS or FORMSOF. Therefore I want to develop a query language where you only have to specify this combination of functions and a few parameters to generate the corresponding SQL.
 \subsection{Language definition}
 The first step to define a language is to define its purpose. In this case, there should be functions that represent full-text functions. Furthermore, one must be able to pass parameters to these functions and one should be able to combine both parameters and functions with logical operators and, or and not.
-To announce a function, this query language uses an '@', e.g. '@contains'. From programming languages of the C-family one recognizes the use of parentheses '()' to define parameters. To avoid later confusion with parentheses used for logical grouping, this language uses the colon ':' to enclose parameters. For now, a parameter is defined as a simple word or phrase, which is delimited with quotes '"'. These few rules already allow the definition of a query, such as \lstinline[language=Fulltext-Search]$@contains:apple:$, where 'contains' is the name of a function.
-This set of rules can be written in \ac{EBNF} as:
+To announce a function, this query language uses an '@', e.g. '@contains'. From programming languages of the C-family one recognizes the use of parentheses '()' to define parameters. To avoid later confusion with parentheses used for logical grouping, this language uses the colon ':' to enclose parameters. For now, a parameter is defined as a simple word or phrase, which is delimited with quotes '"'. These few rules already allow the definition of a query, such as \lstinline[language=Fulltext-Search]$@contains:apple:$ where 'contains' is the name of a function.
+This first set of rules can be written in \ac{EBNF} as:
 \begin{grammar}
     <search> ::= '@'<function>':'<parameter>':'; \\
     <function> ::= 'contains'; \\
     <parameter> ::= <word>|' '' '\{[' ']<word>\}' '' '; \\
     <word> ::= \{'a'-'z'|'A'-'Z'\};
 \end{grammar}
+Note that the function variable only includes 'contains'. In future definitions, it should accept the different functions that are going to be defined.\\
+A feature that is also needed is the logical combination and negation of multiple search terms. For example, it should be possible to search for 'apple' or 'tree' and not 'worm'. For and the language accepts the characters '\&' and '+', for or it accepts '|' and for negation it accepts '!' and '-'. To cover all possible logical operations, groups are also needed to allow precedence between the different operators. For this parentheses are used. Using groups it is now possible to build a logic like 'apple' AND NOT('tree' OR 'worm'), where the whole statement inside the parentheses is processed negated, and prioritized instead of being processed from left to right.
+\subsection{Lexer}
+The first part of a code generator is the lexer. A lexer gets a file or in this case a string as input and divides this input into a series of tokens. So the input \lstinline[language=Fulltext-Search]$@contains:apple:$ becomes the tokens: '@', 'contains', ':', 'apple' and ':'. These tokens are not interpreted yet but are only being recognized as separate characters. To achieve this in code the crate logos is used, to avoid writing redundant code. To understand the code written in lexer.rs what follows is a short explanation of how this crate is used in the context of this prototype.\\
 \begin{mycapcode}[H]
-    \caption{example code listing}
-    \lstinputlisting[language=Rust, linerange={31-55}]{code/code_gen/main.rs}
-    \centerline{Source: main.rs}
+    \caption{Basic token defintions}
+    \lstinputlisting[language=Rust, linerange={26-28}]{code/code_gen/lexer.rs}
+    \vdots
+    \lstinputlisting[language=Rust, linerange={38-55}]{code/code_gen/lexer.rs}
+    \vdots
+    \lstinputlisting[language=Rust, linerange={81-81}]{code/code_gen/lexer.rs}
+    \centerline{Source: lexer.rs}
 \end{mycapcode}
