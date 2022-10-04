@@ -1,0 +1,3 @@
+USE Wikipedia;
+ALTER TABLE [dbo].[Real_Article]
+ADD ID INT IDENTITY(1, 1) PRIMARY KEY
