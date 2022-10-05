@@ -13,6 +13,7 @@ This first set of rules can be written in \ac{EBNF} as:
 \end{grammar}
 Note that the function variable only includes 'contains'. In future definitions, it should accept the different functions that are going to be defined.\\
 A feature that is also needed is the logical combination and negation of multiple search terms. For example, it should be possible to search for 'apple' or 'tree' and not 'worm'. For and the language accepts the characters '\&' and '+', for or it accepts '|' and for negation it accepts '!' and '-'. To cover all possible logical operations, groups are also needed to allow precedence between the different operators. For this parentheses are used. Using groups it is now possible to build a logic like 'apple' AND NOT('tree' OR 'worm'), where the whole statement inside the parentheses is processed negated, and prioritized instead of being processed from left to right.
+% To be continued
 \subsection{Lexer}
 The first part of a code generator is the lexer. A lexer gets a file or in this case a string as input and divides this input into a series of tokens. So the input \lstinline[language=Fulltext-Search]$@contains:apple:$ becomes the tokens: '@', 'contains', ':', 'apple' and ':'. These tokens are not interpreted yet but are only being recognized as separate characters. To achieve this in code the crate logos is used, to avoid writing redundant code. To understand the code written in lexer.rs what follows is a short explanation of how this crate is used in the context of this prototype.\\
 To define tokens, Logos can be added to the derive statement of an enumeration and a matching rule can be defined using a literal string or a regular expression. For example, in line 73 of code listing \ref{code:tokens}, a literal string is used to recognize the colon token, and line 33 uses a regular expression to recognize decimals between 0 and 1. It also calls an arbitrary function to\_float (see line 17) to define that in this case the data should be put into the datatype f64. Logos also requires an error type (see line 78), which is also used to skip whitespaces. \parencite[cf.][n.p.]{hirsz_logos_2022}
@@ -32,4 +33,17 @@ To define tokens, Logos can be added to the derive statement of an enumeration a
 \end{mycapcode}
 These tokens are then compiled in a list and passed over to the parser as the work of the lexer is done.
 \subsection{Parser}
-The heart of the code generator.
+In the parser, a large part of the heavy lifting is done, because here the list of tokens is interpreted and checked for their 'admissibility' in the language. The parser of this custom query language stores a copy of the token list still to be parsed and additionally the current token and the next one in the list. The current token is often used to make comparisons between it and the token that would be expected, while the peek token is often used to see whether the end of the token list has already been reached. When initializing the parser both the current and the peek token are set to \lstinline[language=Rust]$Token::EoF$ which represents the edge case end of file.
+\begin{mycapcode}[H]
+    \caption{Parser struct}
+    \label{code:parser-struct}
+    \lstinputlisting[language=Rust, linerange={49-64}]{code/code_gen/parser.rs}
+    \centerline{Source: parser.rs}
+\end{mycapcode}
+In the parsing process, two different levels are distinguished: expressions and statements. Statements are the various functions that can be used in the language, such as 'near', which in lines 25 to 28 of code listing \ref{code:stat-expr} is defined with several expressions as 'parameters' and another expression as a 'proximity' variable. Expressions are the several values that can appear in a search query, for example, words, phrases, or numbers (lines 37 and 38). The special cases of operators are also represented by both statements and expressions. These will be discussed in more detail later.
+\begin{mycapcode}[H]
+    \caption{Statements and expressions}
+    \label{code:stat-expr}
+    \lstinputlisting[language=Rust, linerange={3-42}]{code/code_gen/ast.rs}
+    \centerline{Source: ast.rs}
+\end{mycapcode}
