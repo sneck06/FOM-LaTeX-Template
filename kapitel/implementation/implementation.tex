@@ -2,7 +2,7 @@
 \section{Implementation}
 When using the full-text search, large parts of the SQL statements needed to describe the search are the same, since the search criteria are defined as either WHERE conditions or JOIN criteria. If you want to define a full-text search, you usually use a combination of the given functions. In MSSQL this would be for example CONTAINS or FORMSOF. Therefore I want to develop a query language where you only have to specify this combination of functions and a few parameters to generate the corresponding SQL.
 \subsection{Language definition}
-The first step to define a language is to define its purpose. In this case, there should be functions that represent full-text functions. Furthermore, one must be able to pass parameters to these functions and one should be able to combine both parameters and functions with logical operators and, or and not.
+The first step to defining a language is to define its purpose. In this case, there should be functions that represent full-text functions. Furthermore, one must be able to pass parameters to these functions and one should be able to combine both parameters and functions with logical operators and, or and not.
 To announce a function, this query language uses an '@', e.g. '@contains'. From programming languages of the C-family one recognizes the use of parentheses '()' to define parameters. To avoid later confusion with parentheses used for logical grouping, this language uses the colon ':' to enclose parameters. For now, a parameter is defined as a simple word or phrase, which is delimited with quotes '"'. These few rules already allow the definition of a query, such as \lstinline[language=Fulltext-Search]$@contains:apple:$ where 'contains' is the name of a function.
 This first set of rules can be written in \ac{EBNF} as:
 \begin{grammar}
@@ -16,12 +16,10 @@ A feature that is also needed is the logical combination and negation of multipl
 % To be continued
 \subsection{Lexer}
 The first part of a code generator is the lexer. A lexer gets a file or in this case a string as input and divides this input into a series of tokens. So the input \lstinline[language=Fulltext-Search]$@contains:apple:$ becomes the tokens: '@', 'contains', ':', 'apple' and ':'. These tokens are not interpreted yet but are only being recognized as separate characters. To achieve this in code the crate logos is used, to avoid writing redundant code. To understand the code written in lexer.rs what follows is a short explanation of how this crate is used in the context of this prototype.\\
-To define tokens, Logos can be added to the derive statement of an enumeration and a matching rule can be defined using a literal string or a regular expression. For example, in line 73 of code listing \ref{code:tokens}, a literal string is used to recognize the colon token, and line 33 uses a regular expression to recognize decimals between 0 and 1. It also calls an arbitrary function to\_float (see line 17) to define that in this case the data should be put into the datatype f64. Logos also requires an error type (see line 78), which is also used to skip whitespaces. \parencite[cf.][n.p.]{hirsz_logos_2022}
+To define tokens, Logos can be added to the derive statement of an enumeration and a matching rule can be defined using a literal string or a regular expression. For example, in line 73 of listing \ref{code:tokens}, a literal string is used to recognize the colon token, and line 33 uses a regular expression to recognize decimals between 0 and 1. It also calls an arbitrary function to\_float (listing \ref{code:tokens} lines 17-19) to define that in this case the data should be cast into the datatype f64. Logos also requires an error type (list. \ref{code:tokens} l. 78-80), which is also used to skip whitespaces. \parencite[cf.][n.p.]{hirsz_logos_2022}
 \begin{codeenv}
     \captionof{mycapcode}{Token defintions}
     \label{code:tokens}
-    \lstinputlisting[language=Rust, linerange={1-1}]{code/code_gen/lexer.rs}
-    \vdots
     \lstinputlisting[language=Rust, linerange={16-19}]{code/code_gen/lexer.rs}
     \vdots
     \lstinputlisting[language=Rust, linerange={26-28}]{code/code_gen/lexer.rs}
@@ -33,17 +31,43 @@ To define tokens, Logos can be added to the derive statement of an enumeration a
 \end{codeenv}
 These tokens are then compiled in a list and passed over to the parser as the work of the lexer is done.
 \subsection{Parser}
-In the parser, a large part of the heavy lifting is done, because here the list of tokens is interpreted and checked for their 'admissibility' in the language. The parser of this custom query language stores a copy of the token list still to be parsed and additionally the current token and the next one in the list. The current token is often used to make comparisons between it and the token that would be expected, while the peek token is often used to see whether the end of the token list has already been reached. When initializing the parser both the current and the peek token are set to \lstinline[language=Rust]$Token::EoF$ which represents the edge case end of file.
+In the parser, a large part of the heavy lifting is done, because here the list of tokens is interpreted and checked for their 'admissibility' in the language. The parser of this custom query language stores a copy of the token list still to be parsed and additionally the current token and the next one in the list. The current token is often used to make comparisons between it and the token that would be expected, while the peek token is often used to see whether the end of the token list has already been reached. When initializing the parser both the current and the peek token are set to \lstinline[language=Rust]$Token::EoF$ which represents the edge case end of file. (list. \ref{code:parser-struct} l. 61-62)
 \begin{codeenv}
     \captionof{mycapcode}{Parser struct}
     \label{code:parser-struct}
     \lstinputlisting[language=Rust, linerange={49-64}]{code/code_gen/parser.rs}
     \centerline{Source: parser.rs}
 \end{codeenv}
-In the parsing process, two different levels are distinguished: expressions and statements. Statements are the various functions that can be used in the language, such as 'near', which in lines 25 to 28 of code listing \ref{code:stat-expr} is defined with several expressions as 'parameters' and another expression as a 'proximity' variable. Expressions are the several values that can appear in a search query, for example, words, phrases, or numbers (lines 37 and 38). The special cases of operators are also represented by both statements and expressions. These will be discussed in more detail later.
+In the parsing process, two different levels are distinguished: expressions and statements. Statements are the various functions that can be used in the language, such as 'near', which is defined with several expressions as 'parameters' and another expression as a 'proximity' variable. (list. \ref{code:stat-expr} l. 25-28) Expressions are the several values that can appear in a search query, for example, words, phrases, or numbers. (list. \ref{code:stat-expr} l. 37-38) The special cases of operators are also represented by both statements and expressions. These will be discussed in more detail later.
 \begin{codeenv}
     \captionof{mycapcode}{Statements and expressions}
     \label{code:stat-expr}
-    \lstinputlisting[language=Rust, linerange={3-42}]{code/code_gen/ast.rs}
+    \lstinputlisting[language=Rust, linerange={3-4}]{code/code_gen/ast.rs}
+    \vdots
+    \lstinputlisting[language=Rust, linerange={25-28}]{code/code_gen/ast.rs}
+    \vdots
+    \lstinputlisting[language=Rust, linerange={35-39}]{code/code_gen/ast.rs}
     \centerline{Source: ast.rs}
 \end{codeenv}
+The tokens are normally processed linearly, always watching out not to run past the end of the file. (list. \ref{code:read} l. 69) With each call of read current and peek are updated and the next statement is parsed. Read is called manually twice at the beginning to overwrite the initial \lstinline[language=Rust]$Token::EoF$. (list. \ref{code:read} l. 12-14) Otherwise, the next statements are parsed until the end of the token list is reached. (list. \ref{code:read} l. 16-18)
+\begin{codeenv}
+    \captionof{mycapcode}{Parser read}
+    \label{code:read}
+    \lstinputlisting[language=Rust, linerange={7-20}]{code/code_gen/parser.rs}
+    \vdots
+    \lstinputlisting[language=Rust, linerange={66-83}]{code/code_gen/parser.rs}
+    \centerline{Source: parser.rs}
+\end{codeenv}
+When parsing a statement there must be a function token at the beginning of a statement. (list. \ref{code:weighted} l. 115+135) If this token is found, the procedure is different depending on the function. For example, the function weighted is parsed as follows: (list. \ref{code:weighted} l. 320-350)\\
+First, a colon is expected, because according to the language definition the parameters are introduced with one. As parameters, there are expected to be combinations of a search term (word or phrase) and a decimal between 0 and 1. These must be separated by commas. These tuples are expected until a colon appears as a token again. The decimals representing weights must add up to exactly 1. If none of the rules are violated, the list of tuples is passed back to the function parse\_statement and stored in the form of a statement enumeration. (list. \ref{code:weighted} l. 135-137)
+\begin{codeenv}
+    \captionof{mycapcode}{Parse weighted}
+    \label{code:weighted}
+    \lstinputlisting[language=Rust, linerange={111-115}]{code/code_gen/parser.rs}
+    \vdots
+    \lstinputlisting[language=Rust, linerange={135-137}]{code/code_gen/parser.rs}
+    \vdots
+    \lstinputlisting[language=Rust, linerange={320-350}]{code/code_gen/parser.rs}
+    \centerline{Source: parser.rs}
+\end{codeenv}
+% Difference expect_and_read and parse_expression
