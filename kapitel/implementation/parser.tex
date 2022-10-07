@@ -45,10 +45,10 @@ In the parse\_statement function, two different functions are called to process 
     \lstinputlisting[language=Rust, linerange={85-109}]{code/code_gen/parser.rs}
     \centerline{Source: parser.rs}
 \end{codeenv}
-The second function is parse\_expression, which is similar in logic to parse\_statement. Here the current token is compared to the possible expressions and returned as an expression enumeration.
+The second function is parse\_expression, which is similar in logic to parse\_statement. Here the current token is compared to the possible expressions and returned as an expression enumeration. For example, with the WordOrPhrase token, the content is stored in the variable s and passed when the expression counterpart is generated (code \ref{code:parse-word}, 154-156).
 \begin{codeenv}
-    \captionof{mycapcode}{parse\_expression}
-    \label{code:parse-expr}
+    \captionof{mycapcode}{Parse WordOrPhrase}
+    \label{code:parse-word}
     \lstinputlisting[language=Rust, linerange={151-157}]{code/code_gen/parser.rs}
     \centerline{Source: parser.rs}
 \end{codeenv}
