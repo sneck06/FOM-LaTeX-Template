@@ -1,9 +1,9 @@
 \subsection{Parser}
-In the parser, a large part of the heavy lifting is done, because here the list of tokens is interpreted and checked for their admissibility in the language. The parser of this custom query language stores a copy of the token list still to be parsed and additionally the current token and the next one in the list. The current token is often used to make comparisons between it and the token that would be expected, while the peek token is often used to see whether the end of the token list has already been reached. When initializing the parser both the current and the peek token are set to \lstinline[language=Rust]$Token::EoF$ which represents the edge case end of file (code \ref{code:parser-struct}, 61-62).
+In the parser, a large part of the heavy lifting is done, because here the list of tokens is interpreted and checked for their admissibility in the language. The parser of this custom query language stores a copy of the token list still to be parsed and additionally the current token and the next one in the list. The current token is often used to make comparisons between it and the token that would be expected, while the peek token is often used to see whether the end of the token list has already been reached. When initializing the parser both the current and the peek token are set to \lstinline[language=Rust]$Token::EoF$ which represents the edge case end of file (code \ref{code:parser-struct}, 66-67).
 \begin{codeenv}
     \captionof{mycapcode}{Parser struct}
     \label{code:parser-struct}
-    \lstinputlisting[language=Rust, linerange={49-64}]{code/code_gen/parser.rs}
+    \lstinputlisting[language=Rust, linerange={54-69}]{code/code_gen/parser.rs}
     \centerline{Source: parser.rs}
 \end{codeenv}
 In the parsing process, two different levels are distinguished: expressions and statements. Statements are the various functions that can be used in the language, such as 'near', which is defined with several expressions as 'parameters' and another expression as a 'proximity' variable (code \ref{code:stat-expr}, 25-28). Expressions are the several values that can appear in a search query, for example, words, phrases, or numbers (code \ref{code:stat-expr}, 37-38). The special cases of operators are also represented by both statements and expressions. These will be discussed in more detail later.
@@ -17,39 +17,39 @@ In the parsing process, two different levels are distinguished: expressions and 
     \lstinputlisting[language=Rust, linerange={35-39}]{code/code_gen/ast.rs}
     \centerline{Source: ast.rs}
 \end{codeenv}
-The tokens are normally processed linearly, always watching out not to run past the end of the file (code \ref{code:read}, 69). With each call of read current and peek are updated and the next statement is parsed. Read is called manually twice at the beginning to overwrite the initial \lstinline[language=Rust]$Token::EoF$ (code \ref{code:read}, 12-14). Otherwise, the next statements are parsed until the end of the token list is reached (code \ref{code:read}, 16-18).
+The tokens are normally processed linearly, always watching out not to run past the end of the file (code \ref{code:read}, 74). With each call of read current and peek are updated and the next statement is parsed. Read is called manually twice at the beginning to overwrite the initial \lstinline[language=Rust]$Token::EoF$ (code \ref{code:read}, 12-14). Otherwise, the next statements are parsed until the end of the token list is reached (code \ref{code:read}, 16-18).
 \begin{codeenv}
     \captionof{mycapcode}{Parser read}
     \label{code:read}
     \lstinputlisting[language=Rust, linerange={7-20}]{code/code_gen/parser.rs}
     \vdots
-    \lstinputlisting[language=Rust, linerange={66-83}]{code/code_gen/parser.rs}
+    \lstinputlisting[language=Rust, linerange={71-88}]{code/code_gen/parser.rs}
     \centerline{Source: parser.rs}
 \end{codeenv}
-When parsing a statement there must be a function token at the beginning of a statement (code \ref{code:weighted}, 115+135). If this token is found, the procedure is different depending on the function. For example, the function weighted is parsed as follows: (code \ref{code:weighted}, 320-350)\\
-First, a colon is expected, because according to the language definition the parameters are introduced with one. As parameters, there are expected to be combinations of a search term (word or phrase) and a decimal between 0 and 1. These must be separated by commas. These tuples are expected until a colon appears as a token again. The decimals representing weights must add up to exactly 1. If none of the rules are violated, the list of tuples is passed back to the function parse\_statement and stored in the form of a statement enumeration (code \ref{code:weighted}, 135-137).
+When parsing a statement there must be a function token at the beginning of a statement (code \ref{code:weighted}, 120+140). If this token is found, the procedure is different depending on the function. For example, the function weighted is parsed as follows: (code \ref{code:weighted}, 325-355)\\
+First, a colon is expected, because according to the language definition the parameters are introduced with one. As parameters, there are expected to be combinations of a search term (word or phrase) and a decimal between 0 and 1. These must be separated by commas. These tuples are expected until a colon appears as a token again. The decimals representing weights must add up to exactly 1. If none of the rules are violated, the list of tuples is passed back to the function parse\_statement and stored in the form of a statement enumeration (code \ref{code:weighted}, 140-142).
 \begin{codeenv}
     \captionof{mycapcode}{Parse weighted}
     \label{code:weighted}
-    \lstinputlisting[language=Rust, linerange={111-115}]{code/code_gen/parser.rs}
+    \lstinputlisting[language=Rust, linerange={116-120}]{code/code_gen/parser.rs}
     \vdots
-    \lstinputlisting[language=Rust, linerange={135-137}]{code/code_gen/parser.rs}
+    \lstinputlisting[language=Rust, linerange={140-142}]{code/code_gen/parser.rs}
     \vdots
-    \lstinputlisting[language=Rust, linerange={320-350}]{code/code_gen/parser.rs}
+    \lstinputlisting[language=Rust, linerange={325-355}]{code/code_gen/parser.rs}
     \centerline{Source: parser.rs}
 \end{codeenv}
-In the parse\_statement function, two different functions are called to process tokens. On the one hand, expect\_token\_and\_read (code \ref{code:expect}, 105-109) compares the current token with an input variable and reads past it without further logic. This function is mostly used for parsing syntactic tokens, such as the colon, which themselves have no impact on the content of the search.
+In the parse\_statement function, two different functions are called to process tokens. On the one hand, expect\_token\_and\_read (code \ref{code:expect}, 110-114) compares the current token with an input variable and reads past it without further logic. This function is mostly used for parsing syntactic tokens, such as the colon, which themselves have no impact on the content of the search.
 \begin{codeenv}
     \captionof{mycapcode}{expect\_token\_and\_read}
     \label{code:expect}
-    \lstinputlisting[language=Rust, linerange={85-109}]{code/code_gen/parser.rs}
+    \lstinputlisting[language=Rust, linerange={90-114}]{code/code_gen/parser.rs}
     \centerline{Source: parser.rs}
 \end{codeenv}
-The second function is parse\_expression, which is similar in logic to parse\_statement. Here the current token is compared to the possible expressions and returned as an expression enumeration. For example, with the WordOrPhrase token, the content is stored in the variable s and passed when the expression counterpart is generated (code \ref{code:parse-word}, 154-156).
+The second function is parse\_expression, which is similar in logic to parse\_statement. Here the current token is compared to the possible expressions and returned as an expression enumeration. For example, with the WordOrPhrase token, the content is stored in the variable s and passed when the expression counterpart is generated (code \ref{code:parse-word}, 159-161).
 \begin{codeenv}
     \captionof{mycapcode}{Parse WordOrPhrase}
     \label{code:parse-word}
-    \lstinputlisting[language=Rust, linerange={151-157}]{code/code_gen/parser.rs}
+    \lstinputlisting[language=Rust, linerange={156-162}]{code/code_gen/parser.rs}
     \centerline{Source: parser.rs}
 \end{codeenv}
 With these building blocks, it is already possible to parse a token list, like\\

@@ -1,2 +1,20 @@
 \subsection{Parsing operators and groups}
-In addition to simple search terms and the call of a single function, the query language should also offer the possibility to logically link search terms and use several functions simultaneously. To make this possible, operators such as AND, OR, and NOT, and groups come into play. First, the logical combination of search terms is considered.
+In addition to simple search terms and the call of a single function, the query language should also offer the possibility to logically link search terms and use several functions simultaneously. To make this possible, operators such as AND, OR, and NOT, and groups come into play. To interpret these types of operators and groups and store them as part of the \ac{AST}, there are separate types for them as both statement and expression. The statement enumeration (code \ref{code:op-enums}, 8-12) is used to allow the use of multiple functions in the query language, while the expression enumerations (code \ref{code:op-enums}, 40-41) are used to logically link search terms. The operators themselves are stored as a separate enumeration, with a function to translate tokens into operators (code \ref{code:op-enums}, 52-59).
+\begin{codeenv}
+    \captionof{mycapcode}{Operator statements and expressions}
+    \label{code:op-enums}
+    \lstinputlisting[language=Rust, linerange={3-12}]{code/code_gen/ast.rs}
+    \vdots
+    \lstinputlisting[language=Rust, linerange={33-36}]{code/code_gen/ast.rs}
+    \vdots
+    \lstinputlisting[language=Rust, linerange={40-60}]{code/code_gen/ast.rs}
+    \centerline{Source: ast.rs}
+\end{codeenv}
+The big challenge with operators and groups is that it is no longer sufficient to process the token list linearly because operators are partly written after the affected tokens and hierarchies exist between the operators. For example, the AND operator has a stronger binding power than the OR operator, and groups, or parentheses, have an even higher binding power. This binding power is in text and code further called precedence.\\
+Precedence is implemented as an ordered enumeration, which allows them to be compared and assigned higher or lower precedence. As with operators, there is a function to translate tokens into precedence (code \ref{code:precedence}, 37-51). The concept of precedence already appears in the code listings \ref{code:weighted} and \ref{code:parse-word} as an input variable for the functions parse\_statement and parse\_expression.
+\begin{codeenv}
+    \captionof{mycapcode}{Precedence}
+    \label{code:precedence}
+    \lstinputlisting[language=Rust, linerange={22-52}]{code/code_gen/parser.rs}
+    \centerline{Source: parser.rs}
+\end{codeenv}
