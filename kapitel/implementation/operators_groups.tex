@@ -18,7 +18,7 @@ Precedence is implemented as an ordered enumeration, which allows them to be com
     \lstinputlisting[language=Rust, linerange={22-52}]{code/code_gen/parser.rs}
     \centerline{Source: parser.rs}
 \end{codeenv}
-Expression operators that are written before the token in question, such as the NOT operator, can be processed similarly to normal expressions. When the parser encounters one of the NOT tokens in parse\_expression (code \ref{code:not}, 171-177), an \lstinline[language=Rust]$Expression::Prefix$ is returned, where the actual search term is parsed with the parameter \lstinline[language=Rust]$Precedence::Prefix$, which is higher than the default \lstinline[language=Rust]$Prefix::Lowest$.
+Expression operators that are written before the token in question, such as the NOT operator, can be processed similarly to normal expressions. When the parser encounters one of the NOT tokens in parse\_expression (code \ref{code:not}, 171-177), an \lstinline[language=Rust]$Expression::Prefix$ is returned, where the actual search term is parsed with the parameter \lstinline[language=Rust]$Precedence::Prefix$, which is higher than the default \lstinline[language=Rust]$Precedence::Lowest$.
 \begin{codeenv}
     \captionof{mycapcode}{Parse NOT}
     \label{code:not}
