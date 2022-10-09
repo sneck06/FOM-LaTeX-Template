@@ -18,3 +18,26 @@ Precedence is implemented as an ordered enumeration, which allows them to be com
     \lstinputlisting[language=Rust, linerange={22-52}]{code/code_gen/parser.rs}
     \centerline{Source: parser.rs}
 \end{codeenv}
+Expression operators that are written before the token in question, such as the NOT operator, can be processed similarly to normal expressions. When the parser encounters one of the NOT tokens in parse\_expression (code \ref{code:not}, 171-177), an \lstinline[language=Rust]$Expression::Prefix$ is returned, where the actual search term is parsed with the parameter \lstinline[language=Rust]$Precedence::Prefix$, which is higher than the default \lstinline[language=Rust]$Prefix::Lowest$.
+\begin{codeenv}
+    \captionof{mycapcode}{Parse NOT}
+    \label{code:not}
+    \lstinputlisting[language=Rust, linerange={171-177}]{code/code_gen/parser.rs}
+    \centerline{Source: parser.rs}
+\end{codeenv}
+More complicated are operators which are written after an affected token. For this, in parse\_expression after a token was parsed an attempt is made to parse a postfix or infix operator. At the same time, the precedence of the next token is compared to keep the corresponding hierarchies of the operators (code \ref{code:infix}, 189-197). The expression parsed so far is passed to the parse\_infix\_expression function and it structures it into an \lstinline[language=Rust]$Expression::Infix$, where the next search term is parsed again with the corresponding precedence.
+\begin{codeenv}
+    \captionof{mycapcode}{Parse infix operator}
+    \label{code:infix}
+    \lstinputlisting[language=Rust, linerange={188-197}]{code/code_gen/parser.rs}
+    \vdots
+    \lstinputlisting[language=Rust, linerange={220-238}]{code/code_gen/parser.rs}
+    \centerline{Source: parser.rs}
+\end{codeenv}
+Postfix operators as such do not exist in the query language; instead, a search term written without an infix operator in between is parsed as a postfix AND (code \ref{code:postfix}, 203-218). So 'apple tree' is parsed as 'apple AND tree'. The second search term could potentially be negated, so the case 'apple -tree' is also covered and parsed as 'apple AND NOT tree'.
+\begin{codeenv}
+    \captionof{mycapcode}{Parse postfix operator}
+    \label{code:postfix}
+    \lstinputlisting[language=Rust, linerange={201-218}]{code/code_gen/parser.rs}
+    \centerline{Source: parser.rs}
+\end{codeenv}
