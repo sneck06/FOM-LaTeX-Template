@@ -21,7 +21,7 @@
 %-----------------------------------
 % Meta information
 %-----------------------------------
-\input{skripte/meta}
+\input{scripts/meta}
 
 \newcommand{\langde}[1]{%
    \ifde\selectlanguage{ngerman}#1\fi}
@@ -154,7 +154,7 @@
 
 % Bib-Datei einbinden
 % Replacement string for Zotero: \n\s+file = \{.*\},
-\addbibresource{literatur/literatur.bib}
+\addbibresource{literature/literature.bib}
 
 % Zeilenabstand im Literaturverzeichnis ist Einzeilig
 % siehe Leitfaden S. 14
@@ -170,12 +170,12 @@
 %-----------------------------------
 % Pfad fuer Abbildungen
 %-----------------------------------
-\graphicspath{{./}{./abbildungen/}}
+\graphicspath{{./}{./figures/}}
 
 %-----------------------------------
 % Weitere Ebene einfügen
 %-----------------------------------
-\input{skripte/weitereEbene}
+\input{scripts/weitereEbene}
 
 %-----------------------------------
 % Zeilenabstand 1,5-zeilig
@@ -303,12 +303,12 @@
 %-----------------------------------
 % Textcommands
 %-----------------------------------
-\input{skripte/textcommands}
+\input{scripts/textcommands}
 
 %-----------------------------------
 % Titlepage
 %-----------------------------------
-\input{kapitel/titelseite}
+\input{chapter/title}
 
 %-----------------------------------
 % Inhaltsverzeichnis
@@ -336,14 +336,14 @@
 % Abkürzungsverzeichnis
 %-----------------------------------
 \addcontentsline{toc}{section}{\abbreHeadingName}
-\input{abkuerzungen/acronyms}
+\input{acronyms/acronyms}
 \newpage
 
 %-----------------------------------
 % Index of Symbols
 %-----------------------------------
 \addcontentsline{toc}{section}{\symheadingname}
-\input{skripte/symbolDef}
+\input{scripts/symbolDef}
 \listofsymbols
 \newpage
 
@@ -366,10 +366,9 @@
 \setcounter{page}{1}
 
 %-----------------------------------
-% Kapitel / Inhalte
+% Chapter / Inhalte
 %-----------------------------------
-% Die Kapitel werden über folgende Datei eingebunden
-\input{skripte/kapitelUebersicht.tex}
+\input{scripts/chapterOverview.tex}
 
 %-----------------------------------
 % Appendix / Anhang
@@ -386,7 +385,7 @@
 	\addtocontents{toc}{\protect\setcounter{tocdepth}{0}} %
 	\renewcommand{\thesection}{\AppendixName\ \arabic{section}}
 	\renewcommand\thesubsection{\AppendixName\ \arabic{section}.\arabic{subsection}}
-	\input{kapitel/appendix/appendix}
+	\input{chapter/appendix/appendix}
 \end{appendix}
 \addtocontents{toc}{\protect\setcounter{tocdepth}{2}}
 
@@ -396,5 +395,5 @@
 \newpage
 \printbibliography[heading=bibintoc,title={\langde{Literaturverzeichnis}\langen{Bibliography}}]
 
-\input{kapitel/appendix/declaration}
+\input{chapter/appendix/declaration}
 \end{document}
