@@ -41,3 +41,22 @@ Postfix operators as such do not exist in the query language; instead, a search 
     \lstinputlisting[language=Rust, linerange={201-218}]{code/code_gen/parser.rs}
     \centerline{Source: parser.rs}
 \end{codeenv}
+Groups are delimited by parentheses and contain the highest precedence of all operators. Inside a group, an expression is expected (code \ref{code:group}, 360), which is then returned as soon as a right parenthesis is read. It should be emphasized that groups are not expressions, but only handle the included expression with higher precedence, so the inner expression itself is returned instead of some kind of group expression (code \ref{code:group}, 184).
+\begin{codeenv}
+    \captionof{mycapcode}{Parse groups}
+    \label{code:group}
+    \lstinputlisting[language=Rust, linerange={178-185}]{code/code_gen/parser.rs}
+    \vdots
+    \lstinputlisting[language=Rust, linerange={357-363}]{code/code_gen/parser.rs}
+    \centerline{Source: parser.rs}
+\end{codeenv}
+Infix operators were also implemented at the statement level to allow multiple functions to be used in a single query. The logic is the same as that of code listing \ref{code:infix}, except that statements are processed instead of expressions.
+\begin{codeenv}
+    \captionof{mycapcode}{Parse infix operator in statements}
+    \label{code:infix-stat}
+    \lstinputlisting[language=Rust, linerange={145-152}]{code/code_gen/parser.rs}
+    \vdots
+    \lstinputlisting[language=Rust, linerange={240-258}]{code/code_gen/parser.rs}
+    \centerline{Source: parser.rs}
+\end{codeenv}
+These are all the building blocks needed to parse the entirety of the query language. The result of the parser is a list of statements or \ac{AST}. This is now passed to the generator to generate SQL code from the logical sequence of operators and search terms.
