@@ -1,2 +1,27 @@
 \subsection{Generator}
-text
+The generator is the last step of the code generator because it does not convert the query language into bytecode or similar, but into another language, in this case, \ac{SQL}. For this purpose, the generator is similarly structured to the parser, except that it receives an \ac{AST} as input instead of output and generates a string from it.\\
+In Transact-\ac{SQL} there are two ways to initiate a full-text search. The use of predicates to specify criteria for the search in the WHERE clause of a query and the use of a CONTAINSTABLE or FREETEXTTABLE, which contains matching results and can be joined to the table to be searched. This generator uses a CONTAINSTABLE to represent all the functions offered by the query language in \ac{SQL}. This method is preferred to predicates because it allows getting a list of results, sorted by how much they match the search criteria, also called a rank. In addition, CONTAINSTABLE is preferred to FREETEXTTABLE, because FREETEXTTABLE is suitable for more fuzzy searches and less for searches that use defining functions to narrow down the results.\\
+Based on these findings, a part of the SQL command can be preformulated with a few constants containing the metadata of the database (code \ref{code:sql-parts}, 7-10). So an INNER JOIN of the CONTAINSTABLE and the table to be searched is made, where the rank must be greater than five to weed out inaccurate matches (code \ref{code:sql-parts}, 29). From this, the title and rank are selected and sorted by rank in descending order. The top five results are then finally returned (code \ref{code:sql-parts}, 22). The exact specifications of the CONTAINSTABLE, which represent the search criteria, is the part that is filled by the generator (code \ref{code:sql-parts}, 26-28).
+\begin{codeenv}
+    \captionof{mycapcode}{Generate sql\_parts}
+    \label{code:sql-parts}
+    \lstinputlisting[language=Rust, linerange={6-10}]{code/code_gen/generator.rs}
+    \vdots
+    \lstinputlisting[language=Rust, linerange={20-29}]{code/code_gen/generator.rs}
+    \centerline{Source: generator.rs}
+\end{codeenv}
+Similar to the parser, the generator stores the list of statements and additionally the current and next statements as attributes, where the peek statement is used to check the end of the list. On initialization current and peek are set to \lstinline[language=Rust]$Statement::EoF$ (code \ref{code:gen-struct}, 45-46).
+\begin{codeenv}
+    \captionof{mycapcode}{Generator struct}
+    \label{code:gen-struct}
+    \lstinputlisting[language=Rust, linerange={33-48}]{code/code_gen/generator.rs}
+    \centerline{Source: generator.rs}
+\end{codeenv}
+The logic to iterate through the list is similar to that of the parser with the use of a next function which checks if the end of the list has already been reached (code \ref{code:write}, 52) and generates the next element if not and a write function which updates the current and peek attributes (code \ref{code:write}, 60-65).
+\begin{codeenv}
+    \captionof{mycapcode}{Generator write}
+    \label{code:write}
+    \lstinputlisting[language=Rust, linerange={50-66}]{code/code_gen/generator.rs}
+    \centerline{Source: generator.rs}
+\end{codeenv}
+% Drei generate Funktionen
