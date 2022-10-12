@@ -24,4 +24,15 @@ The logic to iterate through the list is similar to that of the parser with the 
     \lstinputlisting[language=Rust, linerange={50-66}]{code/code_gen/generator.rs}
     \centerline{Source: generator.rs}
 \end{codeenv}
-% Drei generate Funktionen
+In the code, three functions are used to generate all elements of an \ac{AST}. Similar to the parser, a distinction is made between statements and expressions and additionally operators.\\
+The generate\_statement function is passed a statement to be generated (code \ref{code:gen-weight}, 71). Usually, this statement is one of the implemented functions of the query language, for example, weighted. In the case of the weighted function, the stored attribute 'parameter' is used to translate the statement into \ac{SQL} as follows. First, the \ac{SQL} function ISABOUT is called and a parenthesis is opened (code \ref{code:gen-weight}, 136). Then, for each tuple of search terms and their weights, the values are written down so that, for example, the values 'apple' and 0.4 give \lstinline[language=SQL]$apple WEIGHT (0.4),$ (code \ref{code:gen-weight}, 137-142). Finally, the last comma is deleted, the parenthesis of ISABOUT is closed, and all parts are combined into one string and returned(code \ref{code:gen-weight}, 143-145+150).
+\begin{codeenv}
+    \captionof{mycapcode}{Generate weighted}
+    \label{code:gen-weight}
+    \lstinputlisting[language=Rust, linerange={68-72}]{code/code_gen/generator.rs}
+    \vdots
+    \lstinputlisting[language=Rust, linerange={133-146}]{code/code_gen/generator.rs}
+    \vdots
+    \lstinputlisting[language=Rust, linerange={148-151}]{code/code_gen/generator.rs}
+    \centerline{Source: generator.rs}
+\end{codeenv}
