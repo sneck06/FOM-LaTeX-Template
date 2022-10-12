@@ -36,3 +36,21 @@ The generate\_statement function is passed a statement to be generated (code \re
     \lstinputlisting[language=Rust, linerange={148-151}]{code/code_gen/generator.rs}
     \centerline{Source: generator.rs}
 \end{codeenv}
+There is a special case in generate\_statement, infix operators, this case calls generate\_statement for the two statements and generate\_operator for the operator (code \ref{code:gen-in-stat}, 79-81) and combines the results.
+\begin{codeenv}
+    \captionof{mycapcode}{Generate infix operator statements}
+    \label{code:gen-in-stat}
+    \lstinputlisting[language=Rust, linerange={73-84}]{code/code_gen/generator.rs}
+    \centerline{Source: generator.rs}
+\end{codeenv}
+In the example above for generating weighted, the generate\_expression function was called in code listing \ref{code:gen-weight} in lines 138 and 139 to generate the search terms and weights. This function takes as input the expression it should generate and returns the value of the expression as a string if a normal expression was passed (code \ref{code:gen-expr}, 158-160).
+\begin{codeenv}
+    \captionof{mycapcode}{Generate expressions}
+    \label{code:gen-expr}
+    \lstinputlisting[language=Rust, linerange={153-160}]{code/code_gen/generator.rs}
+    \vdots
+    \lstinputlisting[language=Rust, linerange={186-188}]{code/code_gen/generator.rs}
+    \centerline{Source: generator.rs}
+\end{codeenv}
+% Operators in Expressions and generate\_operators
+% fertig
