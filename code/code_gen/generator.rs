@@ -169,7 +169,7 @@ impl<'p> Generator<'p> {
                     self.generate_expression(*expr2.clone())?,
                     String::from(")"),
                 ];
-                // If the second expression is a not operator it must write NOT before the parentheses
+                // If the second expression is a not operator it must write NOT before the parenthesis
                 match *expr2 {
                     Expression::Prefix(Operator::Not, ..) => sql_parts[4] = String::from("NOT ("),
                     _ => (),

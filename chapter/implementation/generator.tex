@@ -52,5 +52,18 @@ In the example above for generating weighted, the generate\_expression function 
     \lstinputlisting[language=Rust, linerange={186-188}]{code/code_gen/generator.rs}
     \centerline{Source: generator.rs}
 \end{codeenv}
-% Operators in Expressions and generate\_operators
-% fertig
+If a form of an operator is passed as an expression, the corresponding generate function is called for the operators (code \ref{code:gen-op-expr}, 167+181) and the respective expressions are passed to the generate\_expression function. In the case of infix operators, parentheses are also set to safely represent the precedence as recognized by the parser (code \ref{code:gen-op-expr}, 164-170).\\
+Something to pay attention to in \ac{SQL} is that if a NOT operator follows an infix operator, it must be written before the parenthesis, otherwise, \ac{SQL} throws a syntax error. To cover this case, infix operator generation checks if the second expression is a negation and rewrites the string in that case (code \ref{code:gen-op-expr}, 173-176).
+\begin{codeenv}
+    \captionof{mycapcode}{Generate operator expressions}
+    \label{code:gen-op-expr}
+    \lstinputlisting[language=Rust, linerange={161-185}]{code/code_gen/generator.rs}
+    \centerline{Source: generator.rs}
+\end{codeenv}
+The third and simplest generate function is generate\_operator, which translates operators into a string (code \ref{code:gen-op}, 195-196). Noticeable here is the NOT operator, which is already treated separately in code listing \ref{code:gen-op-expr} lines 173-176.
+\begin{codeenv}
+    \captionof{mycapcode}{Generate operators}
+    \label{code:gen-op}
+    \lstinputlisting[language=Rust, linerange={190-201}]{code/code_gen/generator.rs}
+    \centerline{Source: generator.rs}
+\end{codeenv}
