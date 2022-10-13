@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <property name="loggingDir" value="${loggingDir}"/>
+    <property name="logfileBasename" value="${logfileBasename}"/>
+
+    <appender name="Console"
+        class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>
+                %d{yyyy.MM.dd HH:mm:ss,Europe/Berlin},%d{SSS} %-5level [%thread] %logger{36} - [%X{request}] - %msg%n
+            </Pattern>
+        </layout>
+    </appender>
+
+    <!-- File appenders -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${loggingDir}/%d{yyyy-MM-dd,Europe/Berlin}_${logfileBasename}.log</fileNamePattern>
+            <maxHistory>50</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy.MM.dd HH:mm:ss,Europe/Berlin},%d{SSS} %-5level [%thread] %logger{36} - [%X{request}] - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${loggingDir}/%d{yyyy-MM-dd,Europe/Berlin}_${logfileBasename}_error.log</fileNamePattern>
+            <maxHistory>50</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy.MM.dd HH:mm:ss,Europe/Berlin},%d{SSS} %-5level [%thread] %logger{36} - [%X{request}] - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE_METRICS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${loggingDir}/%d{yyyy-MM-dd,Europe/Berlin}_${logfileBasename}_stat.log</fileNamePattern>
+            <maxHistory>50</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy.MM.dd HH:mm:ss,Europe/Berlin},%d{SSS} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE_SecurityRelevant" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${loggingDir}/%d{yyyy-MM-dd,Europe/Berlin}_${logfileBasename}_securityRelevant.log</fileNamePattern>
+            <maxHistory>50</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy.MM.dd HH:mm:ss,Europe/Berlin},%d{SSS} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE_HttpTraces" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${loggingDir}/%d{yyyy-MM-dd,Europe/Berlin}_${logfileBasename}_httptraces.log</fileNamePattern>
+            <maxHistory>50</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy.MM.dd HH:mm:ss,Europe/Berlin},%d{SSS} %-5level [%thread] %logger{36} - [%X{request}] - %msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    
+    
+    <!-- LOG everything at INFO level -->
+    <root level="Info">
+        <appender-ref ref="Console" />
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="FILE_ERROR"/>
+    </root> 
+
+    <logger name="de.telekom.servicelogger.ServiceLogger" level="trace" additivity="false">
+        <appender-ref ref="FILE_HttpTraces" />
+        <appender-ref ref="FILE" />
+        <appender-ref ref="Console" />
+    </logger>
+
+    <!--logging for metrics only-->
+    <logger name="de.telekom.metrics.MetricsLogProvider" level="info" additivity="false">
+        <appender-ref ref="FILE_METRICS" />
+    </logger>
+    
+    <!--logging for security only-->
+    <logger name="de.telekom.auditevents.AuditEventLogProvider" level="trace" additivity="false">
+        <appender-ref ref="FILE_SecurityRelevant" />
+        <appender-ref ref="FILE" />
+    </logger>
+
+</configuration>

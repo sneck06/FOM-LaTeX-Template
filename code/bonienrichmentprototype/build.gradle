@@ -1,0 +1,82 @@
+plugins {
+    id 'org.springframework.boot' version '2.7.3'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+}
+
+group = 'de.telekom'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    //mavenLocal() backup for local testing
+    maven{
+        name "magentaCiCdArtifactory"
+        url 'https://artifactory.devops.telekom.de/artifactory/dhcc-apps-credit-rmc-maven'
+        credentials {
+            username = System.getenv('ARTIFACTORY_USER') != null ? System.getenv('ARTIFACTORY_USER') : magentaArtifactoryUser
+            password = System.getenv('ARTIFACTORY_PASS') != null ? System.getenv('ARTIFACTORY_PASS') : magentaArtifactoryPassword
+        }
+    }
+    maven {
+        name "magentaCiCdMavenCentral"
+        url 'https://artifactory.devops.telekom.de/artifactory/maven-central/'
+        credentials {
+            username = System.getenv('ARTIFACTORY_USER') != null ? System.getenv('ARTIFACTORY_USER') : magentaArtifactoryUser
+            password = System.getenv('ARTIFACTORY_PASS') != null ? System.getenv('ARTIFACTORY_PASS') : magentaArtifactoryPassword
+        }
+
+    }
+    //  mavenCentral() incase Magenta is not reachable
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.projectreactor:reactor-test'
+
+    implementation 'de.telekom.rmcspringbootlibs:core:22.7.2'
+    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+
+    implementation 'de.telekom.rmcspringbootlibs:objectmapper:22.7.2'
+
+    implementation 'de.telekom.rmcspringbootlibs:security:22.7.2'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    implementation 'de.telekom.rmcspringbootlibs:validation:22.7.2'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // https://mvnrepository.com/artifact/co.elastic.apm/apm-agent-attach
+    implementation 'co.elastic.apm:apm-agent-attach:1.32.0'
+
+    //https://mvnrepository.com/artifact/co.elastic.apm/apm-agent-api
+    implementation 'co.elastic.apm:apm-agent-api:1.32.0'
+
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+
+    // https://mvnrepository.com/artifact/co.elastic.apm/elastic-apm-agent
+    implementation 'co.elastic.apm:elastic-apm-agent:1.33.0'
+
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+springBoot {
+    buildInfo()
+}
+
+jar {
+    enabled = false
+}
+

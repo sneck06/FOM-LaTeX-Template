@@ -1,0 +1,10 @@
+POST https://localhost:8081/startbonicheck
+Content-Type: application/json
+
+{
+  "name": "Smith",
+  "firstName": "John",
+  "birthdate": "1985-11-11"
+}
+
+###

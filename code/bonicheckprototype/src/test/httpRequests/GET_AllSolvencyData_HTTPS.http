@@ -1,0 +1,10 @@
+POST https://localhost:8080/findsolvencydatabyid
+Content-Type: application/json
+
+{
+  "internalId": "sm1985"
+}
+
+
+###
+

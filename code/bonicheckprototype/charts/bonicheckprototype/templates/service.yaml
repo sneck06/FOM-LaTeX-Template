@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.Name }}
+spec:
+  ports:
+    - name: 47466-tcp
+      protocol: TCP
+      port: 47466
+      targetPort: 47466
+  selector:
+    name: {{ .Values.Name }}
+    deploymentconfig: {{ .Values.Name }}
+  sessionAffinity: None
+  type: ClusterIP

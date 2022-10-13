@@ -1,0 +1,34 @@
+Name: bonienrichmentprototype
+
+global:
+    livenessprobe:
+        initialdelayseconds: 60
+        failurethreshold: 5
+        periodseconds: 60
+        timeoutseconds: 5
+    readinessprobe:
+        initialdelayseconds: 60
+        failurethreshold: 1
+        periodseconds: 10
+        timeoutseconds: 5
+    env:
+        name: 'string'
+        fileSuffix: 'string'
+        imageTag: 'string'
+        host: 'url'
+        hash: 'string'
+        mtrPreSuffix: ""
+        additionalInstanceName: ''
+        resources:
+            enabled: 'false'
+            cpuRequest: 'string'
+            cpuLimit: 'string'
+            memRequest: 'string'
+            memLimit: 'string'
+        repository:
+            url: 'string'
+            mtruserfromsecrets: 'string'
+        volumes:
+            claimName:
+                logs: 'string'
+                keys: 'string'

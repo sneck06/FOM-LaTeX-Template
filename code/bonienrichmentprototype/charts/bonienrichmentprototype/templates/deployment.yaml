@@ -1,0 +1,90 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: {{ .Values.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.Name }}
+spec:
+  template:
+    metadata:
+      labels:
+        name: {{ .Values.Name }}
+    spec:
+      containers:
+        - name: {{ .Values.Name }}
+          image: {{ .Values.global.env.repository.url}}/{{ .Values.global.env.mtrPreSuffix }}{{ .Values.Name }}:{{ .Values.global.env.imageTag }}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 47466
+              protocol: TCP
+          {{ if eq .Values.global.env.resources.enabled "true" }}
+          resources:
+            limits:
+              cpu: {{ .Values.global.env.resources.cpuLimit }}
+              memory: {{ .Values.global.env.resources.memLimit }}
+            requests:
+              cpu: {{ .Values.global.env.resources.cpuRequest }}
+              memory: {{ .Values.global.env.resources.memRequest }}
+          {{ end }}
+          readinessProbe:
+            failureThreshold: {{ .Values.global.readinessprobe.failurethreshold }}
+            httpGet:
+              path: /readiness
+              port: 47466
+              scheme: HTTPS
+            initialDelaySeconds: {{ .Values.global.readinessprobe.initialdelayseconds }}
+            periodSeconds: {{ .Values.global.readinessprobe.periodseconds }}
+            successThreshold: 1
+            timeoutSeconds: {{ .Values.global.readinessprobe.timeoutseconds }}
+          livenessProbe:
+            failureThreshold: {{ .Values.global.livenessprobe.failurethreshold }}
+            httpGet:
+              path: /alivecheck
+              port: 47466
+              scheme: HTTPS
+            initialDelaySeconds: {{ .Values.global.livenessprobe.initialdelayseconds }}
+            periodSeconds: {{ .Values.global.livenessprobe.periodseconds }}
+            successThreshold: 1
+            timeoutSeconds: {{ .Values.global.livenessprobe.timeoutseconds }}
+          envFrom:
+            - configMapRef:
+                name: global-sslconfig
+            - configMapRef:
+                name: config-{{ .Values.Name }}
+          volumeMounts:
+            - name: keys
+              mountPath: /home/service/keys 
+            - name: logs
+              mountPath: /home/service/logs       
+            - name: config-{{ .Values.Name }}
+              mountPath: /home/service/conf
+          env:
+            - name: ENVIRONMENT
+              value: {{ .Values.global.env.name }}
+            - name: version-hash
+              value: Version:{{ .Values.global.env.hash }}
+            - name: MongoDbPw
+              valueFrom:
+                secretKeyRef:
+                  name: secret-passwords
+                  key: logisticdataservice_mongo
+      imagePullSecrets:
+        - name: {{ .Values.global.env.repository.mtruserfromsecrets }}
+      volumes:
+        - name: keys
+          persistentVolumeClaim:
+            claimName: {{ .Values.global.env.volumes.claimName.keys }}
+        - name: logs
+          persistentVolumeClaim:
+            claimName: {{ .Values.global.env.volumes.claimName.logs }}
+        - name: config-{{ .Values.Name }}
+          configMap:
+            name: config-{{ .Values.Name }}
+  replicas: 1 
+  selector:
+    name: {{ .Values.Name }}
+  triggers:
+    - type: "ConfigChange"
+  strategy: 
+    type: "Rolling"

@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-{{ .Values.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.Name }}
+data:
+ {{ .Values.Name }}.conf: {{ .Files.Get (printf "resources/configmap-%s.properties" .Values.global.env.name) | quote}}

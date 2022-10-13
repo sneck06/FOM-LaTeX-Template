@@ -1,0 +1,17 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    app: {{ .Values.Name }}
+  name: {{ .Values.Name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  host: {{ .Values.Name }}.{{ .Release.Namespace }}.{{ .Values.global.env.host }}
+  port:
+    targetPort: 47466-tcp
+  tls:
+    termination: passthrough  
+  to:
+    kind: Service
+    name: {{ .Values.Name }}
+    weight: 100

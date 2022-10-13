@@ -1,0 +1,7 @@
+POST https://localhost:8080/servicelogger
+Content-Type: application/json
+Accept: application/json
+
+{
+  "Test":"test"
+}

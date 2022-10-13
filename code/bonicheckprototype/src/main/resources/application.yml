@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: bonicheckprototype
+  data:
+    mongodb:
+      database: bcpt
+      uri: mongodb://localhost:27017/bcpt
+  jackson:
+    deserialization:
+      read-unknown-enum-values-using-default-value: true
+  profiles:
+    default: dev
+
+server:
+  port: 8080
+  ssl:
+    enabled: true            # can be set to false for http tests!
+    client-auth: want
+
+logging:
+  config: logs/logback.xml
+  level:
+    org:
+      springframework:
+        security: info
+
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      base-path: /
+    exposure:
+      include: info
+  endpoint:
+    info:
+      enabled: true
+    health:
+      probes:
+        enabled: true
+    caches:
+      cache:
+        time-to-live: 30s
+  health:
+    mongo:
+      enabled: true
+

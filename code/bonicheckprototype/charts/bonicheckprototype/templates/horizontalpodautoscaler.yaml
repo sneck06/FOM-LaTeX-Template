@@ -1,0 +1,13 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ .Values.Name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  maxReplicas: 10
+  minReplicas: 1
+  scaleTargetRef:
+    kind: DeploymentConfig
+    name: {{ .Values.Name }}
+    apiVersion: apps.openshift.io/v1
+  targetCPUUtilizationPercentage: 75
